@@ -1,0 +1,13 @@
+# Artefactos
+out/
+dist/
+# Archivos temporales
+*.swp
+*.tmp
+*.log
+*.trace
+# Entornos locales
+.env
+.envrc
+# Sistema
+.DS_Store
