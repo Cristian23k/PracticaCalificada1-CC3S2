@@ -47,13 +47,21 @@ http_check() {
         exit 1
     fi
     echo "REPORTE:"
-    cat "${DIRECTORIO_RAIZ}/out/http/reporte_http.txt"
-    sleep 2
-    echo "Cabeceras:"
-    cat "${DIRECTORIO_RAIZ}/out/http/cabeceras.txt"
-    sleep 2
-    echo "Cuerpo:"
-    cat "${DIRECTORIO_RAIZ}/out/http/cuerpo_http.txt"
+    cat "${DIRECTORIO_RAIZ}/out/http/reporte_http.txt" 
+    while true
+    do
+       echo -e "Mostrar\n1)Cabeceras\t2)Cuerpo\t3)Volver al menu"
+        read opcion
+        if [ "$opcion" -eq 1 ]; then
+            echo "Cabeceras:"
+            cat "${DIRECTORIO_RAIZ}/out/http/cabeceras.txt"
+        elif [ "$opcion" -eq 2 ]; then
+            echo "Cuerpo:"
+            cat "${DIRECTORIO_RAIZ}/out/http/cuerpo_http.txt"
+        else
+            return 0
+        fi
+    done    
 }
 dns_check() {
     echo "Ejecutando dns_check.sh ..."
@@ -65,7 +73,7 @@ dns_check() {
     fi
     echo "REPORTE:"
     sleep 2
-    cat "${DIRECTORIO_RAIZ}/out/dns/salida_dig.txt"
+    cat "${DIRECTORIO_RAIZ}/out/dns/reporte_dns.txt"
 }
 echo "MONITOR DE SEGURIDAD EN REDES"
 while true
