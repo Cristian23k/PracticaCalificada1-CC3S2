@@ -28,6 +28,10 @@ clean: ## Limpiar archivos generados
 	@rm -rf $(OUT_DIR) $(DIST_DIR)
 	@echo "Directorios limpios"
 
+test: ## Pruebas unitarias
+	@echo "Realizando pruebas ..."
+	@bats tests
+
 help: ## Mostrar ayuda
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':|##' '{printf "  %-12s %s\n", $$1, $$3}'
 
