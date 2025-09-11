@@ -11,6 +11,7 @@ all: tools build run
 
 tools: ## Verifica disponibilidad de utilidades
 	@echo "Verificando disponibilidad de utilidades ..."
+	@command -v bats >/dev/null || { echo "Falta bats"; exit 1; }
 	@command -v curl >/dev/null || { echo "Falta curl"; exit 1; }
 	@command -v dig >/dev/null || { echo "Falta dig"; exit 1; }
 	@echo "Verificaciones exitosas"

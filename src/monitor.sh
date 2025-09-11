@@ -31,3 +31,14 @@ fi
 echo "REPORTE:"
 sleep 2
 cat "${DIRECTORIO_RAIZ}/out/dns/salida_dig.txt"
+#TLS
+echo "Ejecutando tls_check.sh ..."
+if bash ${DIRECTORIO_RAIZ}/src/tls_check.sh; then
+    echo "Se ejecutó el script correctamente"
+else
+    echo "Error al ejecutar el script"
+    exit 1
+fi
+echo "REPORTE:"
+sleep 2
+cat "${DIRECTORIO_RAIZ}/out/tls/info_tls.txt"
