@@ -35,7 +35,6 @@ tls_check() {
         exit 1
     fi
     echo "REPORTE:"
-    sleep 2
     cat "${DIRECTORIO_RAIZ}/out/tls/info_tls.txt"
 }
 http_check() {

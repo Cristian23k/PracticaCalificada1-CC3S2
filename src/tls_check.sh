@@ -5,4 +5,20 @@ DIRECTORIO_SALIDA="${DIRECTORIO_RAIZ}/out/tls"
 mkdir -p "${DIRECTORIO_SALIDA}"
 
 #Mostrar informacion sobre la conexion y la cadena de certificados
-openssl s_client -connect "${TARGETS}:${PORT}" -showcerts > "${DIRECTORIO_SALIDA}/info_tls.txt"
+openssl s_client -connect "${TARGETS}:${PORT}" -servername "${TARGETS}" -showcerts -verify_return_error < /dev/null > "${DIRECTORIO_SALIDA}/info_tls.txt"
+#Contar el numero de elementos en la cadena
+n=$(grep -c "^-----END CERTIFICATE-----$" "${DIRECTORIO_SALIDA}/info_tls.txt")
+#Crear archivos para cada certificado en la cadena
+for i in $(seq 1 "${n}"); do
+    #Guarda el certificado i
+    sed -n "1,/^-----END CERTIFICATE-----$/p" "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/cert${i}.txt"
+    #Mejorar el formato
+    sed -e "s/s:/sujeto: /; s/i:/emisor: /; s/a:/algoritmo: /; s/v:/vigencia: /; s/NotBefore:/Desde:/; s/NotAfter:/Hasta:/" "${DIRECTORIO_SALIDA}/cert${i}.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+    mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/cert${i}.txt"
+    #Borrar el certificado i del archivo
+    sed "1,/^-----END CERTIFICATE-----$/d" "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+    mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/info_tls.txt"
+done
+#Eliminar las 3 primeras lineas del primer certificado, no contienen informacion relevante, ademas iguala el formato del resto
+sed -i "1,3d" "${DIRECTORIO_SALIDA}/cert1.txt"
+
