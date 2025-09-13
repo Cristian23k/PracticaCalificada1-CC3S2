@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 DIRECTORIO_RAIZ="$(dirname "$(dirname "$(realpath "$0")")")"
 
@@ -36,7 +37,23 @@ tls_check() {
         exit 1
     fi
     echo "REPORTE:"
-    cat "${DIRECTORIO_RAIZ}/out/tls/info_tls.txt"
+    cat "${DIRECTORIO_RAIZ}/out/tls/reporte.txt"
+    while true
+    do
+        echo -e "\n1)Mostrar certificado\t2)Volver al menu"
+        read opcion
+        if [ "$opcion" -eq 1 ]; then
+            echo "Ingrese una opcion(0,1..):"
+            read -r op
+            ((op+=1))
+            if ! cat "${DIRECTORIO_RAIZ}/out/tls/cert${op}.txt" 2>/dev/null; then
+                echo "opcion invalida"
+            fi
+        else
+            clear
+            return 0
+        fi
+    done
 }
 http_check() {
     clear
@@ -51,7 +68,7 @@ http_check() {
     cat "${DIRECTORIO_RAIZ}/out/http/reporte_http.txt" 
     while true
     do
-       echo -e "Mostrar\n1)Cabeceras\t2)Cuerpo\t3)Volver al menu"
+        echo -e "Mostrar\n1)Cabeceras\t2)Cuerpo\t3)Volver al menu"
         read opcion
         if [ "$opcion" -eq 1 ]; then
             echo "Cabeceras:"

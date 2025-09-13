@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 DIRECTORIO_RAIZ="$(dirname "$(dirname "$(realpath "$0")")")"
 DIRECTORIO_SALIDA="${DIRECTORIO_RAIZ}/out/tls"
@@ -9,7 +10,7 @@ openssl s_client -connect "${TARGETS}:${PORT}" -servername "${TARGETS}" -showcer
 #Contar el numero de elementos en la cadena
 n=$(grep -c "^-----END CERTIFICATE-----$" "${DIRECTORIO_SALIDA}/info_tls.txt")
 #Creacion de archivo reporte.txt
-echo "Cadena de certificados:" > "${DIRECTORIO_SALIDA}/reporte.txt"
+echo -e '\nCADENA DE CERTIFICADOS\n' > "${DIRECTORIO_SALIDA}/reporte.txt"
 #Crear archivos para cada certificado en la cadena
 for i in $(seq 1 "${n}"); do
     #Guarda el certificado i
@@ -32,5 +33,18 @@ for i in $(seq 1 "${n}"); do
     fi
     sed -n -e "1s/^/\t- /p" -e "2s/^/\t- /p" -e "4s/^/\t- /p" "${DIRECTORIO_SALIDA}/cert${i}.txt" >> "${DIRECTORIO_SALIDA}/reporte.txt"
 done
+#Agregar el resto de datos al reporte
+#Remover el primer campo, tiene informacion repetida
+sed "1,/^---$/d" "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/info_tls.txt"
+#Limpiar el archivo y dando formato
+sed '0,/---/{/---/d}; $d' "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/info_tls.txt"
+sed "1i\\\nAUTENTICACION CLIENTE/SERVIDOR Y HANDSHAKE\n" "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/info_tls.txt"
+sed "s/---/\nESTADO DE LA SESION\n/" "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/info_tls.txt" 
+cat "${DIRECTORIO_SALIDA}/info_tls.txt" "${DIRECTORIO_SALIDA}/reporte.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
+mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/reporte.txt"
 
 

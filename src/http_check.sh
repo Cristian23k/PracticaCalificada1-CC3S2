@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 DIRECTORIO_RAIZ="$(dirname "$(dirname "$(realpath "$0")")")"
 DIRECTORIO_SALIDA="${DIRECTORIO_RAIZ}/out/http"
