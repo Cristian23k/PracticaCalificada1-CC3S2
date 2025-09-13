@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
+trap error ERR #En caso de que ocurra un error se informa y se limpian directorios
 
 DIRECTORIO_RAIZ="$(dirname "$(dirname "$(realpath "$0")")")"
 DIRECTORIO_SALIDA="${DIRECTORIO_RAIZ}/out/dns"
 mkdir -p "${DIRECTORIO_SALIDA}"
 
+error() {
+    echo "Ha ocurrido un error en src/dns_check.sh"
+    rm -rf "${DIRECTORIO_SALIDA}"
+}
 #Consulta el dominio al servidor dns definido
 dig "@${DNS_SERVER}" "${TARGETS}" > "${DIRECTORIO_SALIDA}/salida_dig.txt"
 #Creando reporte

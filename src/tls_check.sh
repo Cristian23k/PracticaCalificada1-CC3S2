@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
+trap error ERR #En caso de que ocurra un error se informa y se limpian directorios
 
 DIRECTORIO_RAIZ="$(dirname "$(dirname "$(realpath "$0")")")"
 DIRECTORIO_SALIDA="${DIRECTORIO_RAIZ}/out/tls"
 mkdir -p "${DIRECTORIO_SALIDA}"
 
+error() {
+    echo "Ha ocurrido un error en src/tls_check.sh"
+    rm -rf "${DIRECTORIO_SALIDA}"
+}
 #Mostrar informacion sobre la conexion y la cadena de certificados
 openssl s_client -connect "${TARGETS}:${PORT}" -servername "${TARGETS}" -showcerts -verify_return_error < /dev/null > "${DIRECTORIO_SALIDA}/info_tls.txt"
 #Contar el numero de elementos en la cadena

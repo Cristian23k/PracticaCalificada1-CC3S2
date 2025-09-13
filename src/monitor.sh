@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+trap limpieza EXIT #Se ejecuta la funcion limpieza siempre que se sale del programa
 DIRECTORIO_RAIZ="$(dirname "$(dirname "$(realpath "$0")")")"
 
+limpieza() {
+    echo "Saliendo ..."
+    rm -rf "${DIRECTORIO_RAIZ}/out"
+}
 menu() {
     echo "Target: ${TARGETS} Puerto: ${PORT} Servidor DNS: ${DNS_SERVER}"
     echo "Ingrese un digito"
@@ -19,7 +24,6 @@ menu() {
             tls_check
             ;;
         4)
-            echo "Saliendo..."
             exit 0
             ;;
         *)
@@ -44,7 +48,7 @@ tls_check() {
         read opcion
         if [ "$opcion" -eq 1 ]; then
             echo "Ingrese una opcion(0,1..):"
-            read -r op
+            read op
             ((op+=1))
             if ! cat "${DIRECTORIO_RAIZ}/out/tls/cert${op}.txt" 2>/dev/null; then
                 echo "opcion invalida"
