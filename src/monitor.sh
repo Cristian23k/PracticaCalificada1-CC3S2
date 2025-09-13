@@ -27,6 +27,7 @@ menu() {
     esac
 }
 tls_check() {
+    clear
     echo "Ejecutando tls_check.sh ..."
     if bash ${DIRECTORIO_RAIZ}/src/tls_check.sh; then
         echo "Se ejecutó el script correctamente"
@@ -38,6 +39,7 @@ tls_check() {
     cat "${DIRECTORIO_RAIZ}/out/tls/info_tls.txt"
 }
 http_check() {
+    clear
     echo "Ejecutando http_check.sh ..."
     if bash ${DIRECTORIO_RAIZ}/src/http_check.sh; then
         echo "Se ejecutó el script correctamente"
@@ -58,11 +60,13 @@ http_check() {
             echo "Cuerpo:"
             cat "${DIRECTORIO_RAIZ}/out/http/cuerpo_http.txt"
         else
+            clear
             return 0
         fi
     done    
 }
 dns_check() {
+    clear
     echo "Ejecutando dns_check.sh ..."
     if bash ${DIRECTORIO_RAIZ}/src/dns_check.sh; then
         echo "Se ejecutó el script correctamente"

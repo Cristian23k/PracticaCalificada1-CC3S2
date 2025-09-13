@@ -8,6 +8,8 @@ mkdir -p "${DIRECTORIO_SALIDA}"
 openssl s_client -connect "${TARGETS}:${PORT}" -servername "${TARGETS}" -showcerts -verify_return_error < /dev/null > "${DIRECTORIO_SALIDA}/info_tls.txt"
 #Contar el numero de elementos en la cadena
 n=$(grep -c "^-----END CERTIFICATE-----$" "${DIRECTORIO_SALIDA}/info_tls.txt")
+#Creacion de archivo reporte.txt
+echo "Cadena de certificados:" > "${DIRECTORIO_SALIDA}/reporte.txt"
 #Crear archivos para cada certificado en la cadena
 for i in $(seq 1 "${n}"); do
     #Guarda el certificado i
@@ -18,7 +20,17 @@ for i in $(seq 1 "${n}"); do
     #Borrar el certificado i del archivo
     sed "1,/^-----END CERTIFICATE-----$/d" "${DIRECTORIO_SALIDA}/info_tls.txt" > "${DIRECTORIO_SALIDA}/aux.txt"
     mv "${DIRECTORIO_SALIDA}/aux.txt" "${DIRECTORIO_SALIDA}/info_tls.txt"
+    #Presentar el certificado en el reporte
+    if [ "$i" -eq 1 ];then
+        #Eliminar las 3 primeras lineas del primer certificado, no contienen informacion relevante, ademas iguala el formato del resto
+        sed -i "1,3d" "${DIRECTORIO_SALIDA}/cert1.txt"
+        echo "Certificado del servidor" >> "${DIRECTORIO_SALIDA}/reporte.txt"
+    elif [ "$i" -eq "${n}" ]; then
+        echo "Certificado raiz" >> "${DIRECTORIO_SALIDA}/reporte.txt"
+    else 
+        echo "Certificado intermedio" >> "${DIRECTORIO_SALIDA}/reporte.txt"
+    fi
+    sed -n -e "1s/^/\t- /p" -e "2s/^/\t- /p" -e "4s/^/\t- /p" "${DIRECTORIO_SALIDA}/cert${i}.txt" >> "${DIRECTORIO_SALIDA}/reporte.txt"
 done
-#Eliminar las 3 primeras lineas del primer certificado, no contienen informacion relevante, ademas iguala el formato del resto
-sed -i "1,3d" "${DIRECTORIO_SALIDA}/cert1.txt"
+
 
