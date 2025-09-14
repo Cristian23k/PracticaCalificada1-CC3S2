@@ -96,10 +96,10 @@ dns_check() {
         exit 1
     fi
     echo "REPORTE:"
-    sleep 2
     cat "${DIRECTORIO_RAIZ}/out/dns/reporte_dns.txt"
 }
 echo "MONITOR DE SEGURIDAD EN REDES"
+nc -vz "${TARGETS}" "${PORT}"
 while true
 do 
     menu
