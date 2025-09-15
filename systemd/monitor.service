@@ -1,0 +1,18 @@
+#este archivo va en /etc/systemd/system/
+#Crear usuario monitor
+#sudo useradd --system --home /nonexistent --shell /usr/sbin/nologin --user-group monitor
+#Copiar el contenido del repositorio a /opt/monitor
+#rsync -a /home/ubuntu1/Desktop/desarrollo-de-software/PC1/PracticaCalificada1-CC3S2/ /opt/monitor/
+#Asignar permisos
+[Unit]
+Description=Monitor HTTP DNS TLS
+Wants=network-online.target
+After=network-online.target
+[Service]
+Type=simple
+User=monitor
+Group=monitor
+EnvironmentFile=/opt/monitor/.env
+ExecStart=/usr/bin/make -C /opt/monitor run-auto
+Restart=on-failure
+[Install]

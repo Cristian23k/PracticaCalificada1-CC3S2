@@ -11,6 +11,7 @@ all: tools build run
 
 tools: ## Verifica disponibilidad de utilidades
 	@echo "Verificando disponibilidad de utilidades ..."
+	@command -v bats >/dev/null || { echo "Falta bats"; exit 1; }
 	@command -v curl >/dev/null || { echo "Falta curl"; exit 1; }
 	@command -v dig >/dev/null || { echo "Falta dig"; exit 1; }
 	@echo "Verificaciones exitosas"
@@ -23,6 +24,12 @@ run: ## Ejecuta el flujo principal
 	@echo "Ejecutando flujo principal"
 	@bash src/monitor.sh
 
+run-auto: tools build
+	@echo "Ejecutando de forma automatica"
+	@bash src/http_check.sh
+	@bash src/dns_check.sh
+	@bash src/tls_check.sh
+	
 clean: ## Limpiar archivos generados
 	@echo "Eliminando directorios out y dist ..."
 	@rm -rf $(OUT_DIR) $(DIST_DIR)
