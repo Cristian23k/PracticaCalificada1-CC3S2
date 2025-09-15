@@ -24,6 +24,12 @@ run: ## Ejecuta el flujo principal
 	@echo "Ejecutando flujo principal"
 	@bash src/monitor.sh
 
+run-auto: tools build
+	@echo "Ejecutando de forma automatica"
+	@bash src/http_check.sh
+	@bash src/dns_check.sh
+	@bash src/tls_check.sh
+	
 clean: ## Limpiar archivos generados
 	@echo "Eliminando directorios out y dist ..."
 	@rm -rf $(OUT_DIR) $(DIST_DIR)
