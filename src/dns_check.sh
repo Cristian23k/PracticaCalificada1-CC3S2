@@ -9,6 +9,7 @@ mkdir -p "${DIRECTORIO_SALIDA}"
 error() {
     echo "Ha ocurrido un error en src/dns_check.sh"
     rm -rf "${DIRECTORIO_SALIDA}"
+    exit 30
 }
 #Consulta el dominio al servidor dns definido
 dig "@${DNS_SERVER}" "${TARGETS}" > "${DIRECTORIO_SALIDA}/salida_dig.txt"
@@ -17,3 +18,5 @@ tail -n 6 "${DIRECTORIO_SALIDA}/salida_dig.txt" |  sed -e 's/Query time/Tiempo d
 echo -e "RESPUESTAS:\n\t\t\tTTL    CLASE   TIPO\t DIRECCION\n\t\t\t       DE LA   DE  \t          \n\t\t\t     CONSULTA  REGISTRO" >> "${DIRECTORIO_SALIDA}/reporte_dns.txt"
 #Extrayendo respuestas y dando formato
 awk '/ANSWER SECTION/,/^$/' "${DIRECTORIO_SALIDA}/salida_dig.txt" | tail -n +2 >> "${DIRECTORIO_SALIDA}/reporte_dns.txt"
+#Falla si no encuentra coincidencias
+grep -q "ANSWER SECTION" "${DIRECTORIO_SALIDA}/salida_dig.txt"

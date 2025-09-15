@@ -9,9 +9,10 @@ mkdir -p "${DIRECTORIO_SALIDA}"
 error() {
     echo "Ha ocurrido un error en src/tls_check.sh"
     rm -rf "${DIRECTORIO_SALIDA}"
+    exit 50
 }
 #Mostrar informacion sobre la conexion y la cadena de certificados
-openssl s_client -connect "${TARGETS}:${PORT}" -servername "${TARGETS}" -showcerts -verify_return_error < /dev/null > "${DIRECTORIO_SALIDA}/info_tls.txt"
+timeout 5 openssl s_client -connect "${TARGETS}:${PORT}" -servername "${TARGETS}" -showcerts -verify_return_error < /dev/null > "${DIRECTORIO_SALIDA}/info_tls.txt"
 #Contar el numero de elementos en la cadena
 n=$(grep -c "^-----END CERTIFICATE-----$" "${DIRECTORIO_SALIDA}/info_tls.txt")
 #Creacion de archivo reporte.txt

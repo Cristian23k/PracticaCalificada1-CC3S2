@@ -99,7 +99,7 @@ dns_check() {
     cat "${DIRECTORIO_RAIZ}/out/dns/reporte_dns.txt"
 }
 echo "MONITOR DE SEGURIDAD EN REDES"
-nc -vz "${TARGETS}" "${PORT}"
+nc -vz "${TARGETS}" "${PORT}" || true
 while true
 do 
     menu
