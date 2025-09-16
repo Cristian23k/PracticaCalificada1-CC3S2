@@ -16,3 +16,16 @@ load ${DIRECTORIO_RAIZ}/tests/test_helpers.bash
     run env TARGETS=estedominionoexiste.xyz ${DIRECTORIO_RAIZ}/src/http_check.sh
     [ "$status" -eq 20 ]  
 }
+#Prueba de idempotencia
+@test "Prueba de idempotencia en el Makefile" {
+    run make run-auto
+    [ "$status" -eq 0 ]
+    [ -f "${DIRECTORIO_RAIZ}/dist/http_check.tar.gz" ]
+    t1=$(stat -c %Y "${DIRECTORIO_RAIZ}/dist/http_check.tar.gz")
+    sleep 2
+    run make run-auto
+    [ "$status" -eq 0 ]
+    [ -f "${DIRECTORIO_RAIZ}/dist/http_check.tar.gz" ]
+    t2=$(stat -c %Y "${DIRECTORIO_RAIZ}/dist/http_check.tar.gz")
+    [ "$t1" -eq "$t2" ]
+}
